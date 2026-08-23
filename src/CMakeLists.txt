@@ -65,6 +65,16 @@ INCLUDE_DIRECTORIES( ${VSP_BINARY_DIR} )
 
 INCLUDE( extLibraryFind )
 
+# VSP_NO_GRAPHICS selects which targets are built, but Vehicle.cpp also guards
+# the VSPAERO viewer check with #ifndef VSP_NO_GRAPHICS. Without the matching
+# compile definition that guard never fires, so a headless build fails
+# CheckForVSPAERO() on a missing vspviewer.exe and SetVSPAEROPath() rejects an
+# otherwise valid directory. Must precede the ADD_SUBDIRECTORY calls below so
+# they inherit the definition.
+IF( VSP_NO_GRAPHICS )
+	ADD_DEFINITIONS( -DVSP_NO_GRAPHICS )
+ENDIF()
+
 ADD_SUBDIRECTORY( external )
 
 IF( NOT VSP_NO_GRAPHICS )
